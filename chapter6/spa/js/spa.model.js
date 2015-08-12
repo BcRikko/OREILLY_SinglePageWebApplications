@@ -169,15 +169,13 @@ spa.model = (function () {
         };
         
         logout = function () {
-            var is_removed, user = stateMap.user;
+            var user = stateMap.user;
             // チャットを追加するときには、ここでチャットルームから出るべき
-            
             chat._leave();
-            is_removed = removePerson(user);
             stateMap.user = stateMap.anon_user;
+            clearPeopleDb();
             
             $.gevent.publish('spa-logout', [user]);
-            return is_removed;
         };
         
         return {
@@ -236,12 +234,13 @@ spa.model = (function () {
             _publish_listchange, _publish_updatechat,
             _update_list, _leave_chat,
 
-            get_chatee, join_chat, send_msg, set_chatee,
+            get_chatee, join_chat, send_msg,
+            set_chatee, update_avatar,
             chatee = null;
 
         // 内部メソッド開始
         _update_list = function (arg_list) {
-            var i, person_map, make_person_map,
+            var i, person_map, make_person_map, person,
                 people_list = arg_list[0],
                 is_chatee_online = false;
             
@@ -265,11 +264,12 @@ spa.model = (function () {
                     id: person_map._id,
                     name: person_map.name
                 };
+                person = makePerson(make_person_map);
                 
                 if (chatee && chatee.id === make_person_map.id) {
                     is_chatee_online = true;
+                    chatee = person;
                 }
-                makePerson(make_person_map);
             }
             
             stateMap.people_db.sort('name');
@@ -360,12 +360,25 @@ spa.model = (function () {
             return true;
         };
         
+        // avatar_update_mapは以下の形式を持つべき
+        // { person_id: <string>, css_map: {
+        //   top: <int>, left: <int>,
+        //   'background-color': <string>
+        // }};
+        update_avatar = function (avatar_update_map) {
+            var sio = isFakeData ? spa.fake.mockSio : spa.data.getSio();
+            if (sio) {
+                sio.emit('updateavatar', avatar_update_map);
+            }
+        };
+        
         return {
             _leave: _leave_chat,
             get_chatee: get_chatee,
             join: join_chat,
             send_msg: send_msg,
-            set_chatee: set_chatee
+            set_chatee: set_chatee,
+            update_avatar: update_avatar
         };
     } ());
     
