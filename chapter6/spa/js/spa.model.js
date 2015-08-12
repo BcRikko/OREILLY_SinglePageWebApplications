@@ -285,14 +285,14 @@ spa.model = (function () {
         
         _publish_updatechat = function (arg_list) {
             var msg_map = arg_list[0];
-            
+
             if (!chatee) { set_chatee(msg_map.sender_id); }
             else if (msg_map.sender_id !== stateMap.user.id
                 && msg_map.sender_id !== chatee.id
                 ) { set_chatee(msg_map.sender_id); }
-            
+
             $.gevent.publish('spa-updatechat', [msg_map]);
-        }
+        };
         // 内部メソッド終了
         
         _leave_chat = function () {
