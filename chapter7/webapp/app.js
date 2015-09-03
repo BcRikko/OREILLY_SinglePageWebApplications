@@ -11,7 +11,7 @@
 /*global */
 
 // モジュールスコープ変数開始
-'use strict'
+'use strict';
 
 var
     http = require('http'),
