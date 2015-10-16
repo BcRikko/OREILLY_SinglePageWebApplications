@@ -25,7 +25,7 @@ var
         'localhost',
         mongodb.Connection.DEFAULT_PORT
         ),
-    dbHHandle = new mongodb.Db(
+    dbHandle = new mongodb.Db(
         'spa', mongoServer, { safe: true }
         ),
     validator = JSV.createEnvironment(),
@@ -78,7 +78,7 @@ constructObj = function (obj_type, obj_map, callback) {
         obj_type, obj_map,
         function (error_list) {
             if (error_list.length === 0) {
-                dbHHandle.collection(
+                dbHandle.collection(
                     obj_type,
                     function (outer_error, collection) {
                         var options_map = { safe: true };
@@ -110,7 +110,7 @@ readObj = function (obj_type, find_map, fields_map, callback) {
         return;
     }
     
-    dbHHandle.collection(
+    dbHandle.collection(
         obj_type,
         function (outer_error, collection) {
             collection.find(find_map, fields_map).toArray(
@@ -134,7 +134,7 @@ updateObj = function (obj_type, find_map, set_map, callback) {
         obj_type, set_map,
         function (error_list) {
             if (error_list.length === 0) {
-                dbHHandle.collection(
+                dbHandle.collection(
                     obj_type,
                     function (outer_error, collection) {
                         collection.update(
@@ -165,7 +165,7 @@ destroyObj = function (obj_type, find_map, callback) {
         return;
     }
     
-    dbHHandle.collection(
+    dbHandle.collection(
         obj_type,
         function (outer_error, collection) {
             var options_map = { safe: true, single: true };
@@ -190,7 +190,7 @@ module.export = {
 // パブリックメソッド終了
 
 // モジュール初期化開始
-dbHHandle.open(function () {
+dbHandle.open(function () {
     console.log('** Connected to MongoDB **');
     clearIsOnline();
 });
