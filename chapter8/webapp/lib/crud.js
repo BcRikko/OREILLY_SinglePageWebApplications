@@ -17,7 +17,7 @@ var
     checkType, constructObj, readObj,
     updateObj, destroyObj,
 
-    mongodb = require('mondodb'),
+    mongodb = require('mongodb'),
     fsHandle = require('fs'),
     JSV = require('JSV').JSV,
 
@@ -116,7 +116,6 @@ readObj = function (obj_type, find_map, fields_map, callback) {
             collection.find(find_map, fields_map).toArray(
                 function (inner_error, map_list) {
                     callback(map_list);
-                    return;
                 }
             );
         }
@@ -142,7 +141,7 @@ updateObj = function (obj_type, find_map, set_map, callback) {
                             { $set: set_map },
                             { safe: true, multi: true, upsert: false },
                             function (inner_error, update_count) {
-                                callback({ uupdate_count: update_count });
+                                callback({ update_count: update_count });
                             }
                             );
                     }
@@ -171,21 +170,21 @@ destroyObj = function (obj_type, find_map, callback) {
             var options_map = { safe: true, single: true };
 
             collection.remove(find_map, options_map,
-                function (inner_error, delete_coount) {
-                    callback({ delete_coount: delete_coount });
+                function (inner_error, delete_count) {
+                    callback({ delete_count: delete_count });
                 }
                 );
         }
         );
 };
 
-module.export = {
+module.exports = {
     makeMongoId: mongodb.ObjectID,
     checkType: checkType,
     construct: constructObj,
     read: readObj,
     update: updateObj,
-    destory: destroyObj
+    destroy: destroyObj
 };
 // パブリックメソッド終了
 

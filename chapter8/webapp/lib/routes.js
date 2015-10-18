@@ -15,7 +15,8 @@
 var
     configRoutes,
     crud = require('./crud'),
-    makeMongoId = mongodb.ObjectID;
+    chat = require('./chat'),
+    makeMongoId = crud.makeMongoId;
 // モジュールスコープ変数終了
 
 // パブリックメソッド開始
@@ -57,7 +58,7 @@ configRoutes = function (app, server) {
     app.post('/:obj_type/update/:id', function (request, response) {
         crud.update(
             request.params.obj_type,
-            { _id: makeMongoId(response.params.id) },
+            { _id: makeMongoId(request.params.id) },
             request.body,
             function (result_map) { response.send(result_map); }
             );
@@ -70,6 +71,8 @@ configRoutes = function (app, server) {
             function (result_map) { response.send(result_map); }
             );
     });
+    
+    chat.connect(server);
 };
 
 module.exports = { configRoutes : configRoutes };
